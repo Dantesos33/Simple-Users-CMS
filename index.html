@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Users CMS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: hsl(34, 57%, 70%);
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            font-size: 1.2rem;
+        }
+
+        li {
+            background-color: hsl(34, 57%, 60%);
+            padding: 1rem;
+            border-radius: 1rem;
+            cursor: pointer;
+        }
+
+        li:hover {
+            background-color: hsl(34, 57%, 50%);
+        }
+
+        #tabledata {
+            max-height: 500px;
+        }
+
+        table {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            text-align: center;
+            border: 1px solid black;
+        }
+
+        form {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+        }
+
+        form input {
+            padding: 1rem;
+            display: flex;
+            margin-bottom: 1rem;
+        }
+
+        form button {
+            outline: none;
+            border: none;
+            background-color: hsl(34, 57%, 60%);
+            padding: 0.8rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        form button:hover {
+            background-color: hsl(34, 57%, 50%);
+        }
+
+        table * {
+            border: 1px solid black;
+            padding: 1rem;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1>Simple Users CMS</h1>
+    <ul id="btns">
+        <li id="showbtn">Show Users</li>
+        <li id="createbtn">Create User</li>
+        <li id="deletebtn">Delete User</li>
+    </ul>
+    <div id="tabledata">
+
+    </div>
+
+    <script>
+        const showbtn = document.getElementById('showbtn');
+        const createbtn = document.getElementById('createbtn');
+        const deletebtn = document.getElementById('deletebtn');
+        const tabledata = document.getElementById('tabledata');
+        const url = `http://localhost:8000/users`;
+        let users;
+
+        const fetchUsers = async () => {
+            const response = await fetch(url);
+            const data = await response.json();
+            users = data;
+            return users;
+        }
+
+        showbtn.addEventListener('click', async () => {
+            users = await fetchUsers();
+            const el = document.createElement('table');
+            el.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>User Id</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                    </tr>
+                </thead>
+                <tbody>${users.map((user) => {
+                return (`<tr>
+                        <td>${user.id}</td>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.gender}</td>
+                    </tr>`)
+            }).join('')
+                }
+                </tbody >
+            `;
+            tabledata.innerHTML = "";
+            tabledata.appendChild(el);
+        })
+
+        createbtn.addEventListener('click', () => {
+            const el = document.createElement('form');
+            el.method = "post";
+            el.action = "/users";
+            el.innerHTML = `
+                <label>Name</label>
+                <input id="username" name="name" placeholder="Enter your name"></input>
+                <label>Email</label>
+                <input id="useremail" name="email" placeholder="Enter your email"></input>
+                <label>Gender</label>
+                <input id="usergender" name="gender" placeholder="Enter your gender"></input>
+                <button id="createsubmit" type="submit">submit</button>
+            `;
+            tabledata.innerHTML = "";
+            tabledata.appendChild(el);
+        });
+
+        deletebtn.addEventListener('click', () => {
+            const el = document.createElement('form');
+            el.method = "post";
+            el.action = `/users`;
+            el.innerHTML = `
+                <label>Id</label>
+                <input name="id" id="deleteid" placeholder="Enter Id to delete"></input>
+                <button id="deletesubmit" type="submit">submit</button>
+            `;
+            tabledata.innerHTML = "";
+            tabledata.appendChild(el);
+
+            const deletesubmit = document.getElementById('deletesubmit');
+            deletesubmit.addEventListener('click', (e) => {
+                const deleteid = document.getElementById('deleteid').value;
+                el.action = `/users/${deleteid}`;
+                el.submit();
+                document.getElementById('deleteid').value = "";
+            })
+        })
+
+
+    </script>
+</body>
+
+</html>
