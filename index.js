@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: false }));
 
 //Http Methods
 app.get("/", (req, res) => {
-  return res.sendFile("index.html", { root: __dirname });
+  return res.send(`Visit <a href="http://localhost:8000/users">http://localhost:8000/users<a/>`);
 });
 
 app.get("/users", (req, res) => {

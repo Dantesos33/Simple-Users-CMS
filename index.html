@@ -148,7 +148,7 @@
         createbtn.addEventListener('click', () => {
             const el = document.createElement('form');
             el.method = "post";
-            el.action = "/users";
+            el.action = url;
             el.innerHTML = `
                 <label>Name</label>
                 <input id="username" name="name" placeholder="Enter your name"></input>
@@ -165,7 +165,7 @@
         deletebtn.addEventListener('click', () => {
             const el = document.createElement('form');
             el.method = "post";
-            el.action = `/users`;
+            el.action = url;
             el.innerHTML = `
                 <label>Id</label>
                 <input name="id" id="deleteid" placeholder="Enter Id to delete"></input>
@@ -177,7 +177,7 @@
             const deletesubmit = document.getElementById('deletesubmit');
             deletesubmit.addEventListener('click', (e) => {
                 const deleteid = document.getElementById('deleteid').value;
-                el.action = `/users/${deleteid}`;
+                el.action = `${url}/${deleteid}`;
                 el.submit();
                 document.getElementById('deleteid').value = "";
             })
